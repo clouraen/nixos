@@ -67,7 +67,7 @@
     go
     jq
     magic-wormhole-rs
-    maximbaz-scripts
+    huggyturd-scripts
     pass
     perlPackages.vidir
     pigz

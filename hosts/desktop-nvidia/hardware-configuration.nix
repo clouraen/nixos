@@ -42,9 +42,6 @@
   # Enable trim support for SSD
   services.fstrim.enable = true;
 
-  # High-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

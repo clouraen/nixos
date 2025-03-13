@@ -1,16 +1,23 @@
 { inputs, globals, ... }:
-inputs.nixpkgs.lib.nixosSystem rec {
+let 
   system = "x86_64-linux";
-  specialArgs = {
-    util = (import ../../util);
-  };
+in
+inputs.nixpkgs.lib.nixosSystem {
+  inherit system;
+
   modules = [
     ./hardware-configuration.nix
-    ../../modules/linux
-    ({ config, ... }: {
-      personal.enable = true;
-
+    ({ config, pkgs, ... }: {
+      # Basic system configuration
       networking.hostName = "desktop-nvidia";
+      
+      # Set user configuration
+      users.users.root = {
+        password = "nixos";
+      };
+
+      # Allow unfree packages (needed for NVIDIA drivers)
+      nixpkgs.config.allowUnfree = true;
 
       # Disable ACPI errors
       boot = {
@@ -33,24 +40,26 @@ inputs.nixpkgs.lib.nixosSystem rec {
         initrd.systemd.enable = true;
       };
 
-      # Nvidia configuration
-      hardware.opengl = {
-        enable = true;
-        driSupport = true;
-        driSupport32Bit = true;
-      };
-
-      services.xserver.videoDrivers = [ "nvidia" ];
-
+      # Graphics configuration
+      hardware.graphics.enable = true;  # New name for opengl.enable
       hardware.nvidia = {
         modesetting.enable = true;
         powerManagement = {
-          enable = true;
-          finegrained = true;
+          enable = false;  # Disabled since we're using ACPI=off
+          finegrained = false;
         };
         open = false;
         nvidiaSettings = true;
         package = config.boot.kernelPackages.nvidiaPackages.stable;
+      };
+
+      # Configure fonts with proper scaling
+      fonts.fontconfig.enable = true;
+
+      # X server configuration
+      services.xserver = {
+        enable = true;
+        videoDrivers = [ "nvidia" ];
       };
 
       # Wayland related environment variables for NVIDIA
@@ -62,11 +71,7 @@ inputs.nixpkgs.lib.nixosSystem rec {
         LIBVA_DRIVER_NAME = "nvidia";
       };
 
-      # Import home-manager modules
-      home-manager.users.${globals.user}.imports = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.nix-index-database.hmModules.nix-index
-      ];
+      system.stateVersion = "23.11";
     })
   ];
 }

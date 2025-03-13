@@ -36,7 +36,7 @@
       enable = true;
 
       userName = "Maxim Baz";
-      userEmail = "git@maximbaz.com";
+      userEmail = "git@huggyturd.com";
 
       signing = {
         key = "04D7A219B0ABE4C2B62A5E654A2B758631E1FD91";

@@ -245,7 +245,7 @@
         "type": "github"
       }
     },
-    "maximbaz-private": {
+    "huggyturd-private": {
       "locked": {
         "lastModified": 1740165832,
         "narHash": "sha256-d8gVMOdCoTQX9sCJDGTrodk2NUY50+2n06rK8ZZxY8w=",
@@ -253,11 +253,11 @@
         "rev": "014bd3ba49adebce258628a458abddfce63162dd",
         "revCount": 19,
         "type": "git",
-        "url": "file:///home/maximbaz/.dotfiles-private"
+        "url": "file:///home/huggyturd/.dotfiles-private"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/maximbaz/.dotfiles-private"
+        "url": "file:///home/huggyturd/.dotfiles-private"
       }
     },
     "naersk": {
@@ -460,7 +460,7 @@
         "firefox-darwin": "firefox-darwin",
         "home-manager": "home-manager",
         "mac-app-util": "mac-app-util",
-        "maximbaz-private": "maximbaz-private",
+        "huggyturd-private": "huggyturd-private",
         "network-dmenu": "network-dmenu",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
@@ -577,13 +577,13 @@
       "locked": {
         "lastModified": 1735581719,
         "narHash": "sha256-SP1oKwwZrr4SjW0/qz0ld+84OAiGxWNR9NicUCQchFI=",
-        "owner": "maximbaz",
+        "owner": "huggyturd",
         "repo": "waybar-syncthing",
         "rev": "d12b1de3d7808e7a1bd83f72f5c10c66895ac694",
         "type": "github"
       },
       "original": {
-        "owner": "maximbaz",
+        "owner": "huggyturd",
         "repo": "waybar-syncthing",
         "type": "github"
       }

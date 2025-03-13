@@ -48,7 +48,7 @@
     kubernetes-helm
     libnotify
     magic-wormhole-rs
-    maximbaz-scripts
+    huggyturd-scripts
     meld
     msmtp
     mysql-client

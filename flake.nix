@@ -1,5 +1,5 @@
 {
-  description = "maximbaz";
+  description = "huggyturd";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -34,7 +34,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    maximbaz-private.url = "git+file:///home/maximbaz/.dotfiles-private";
+    huggyturd-private.url = "git+file:///home/huggyturd/.dotfiles-private";
 
     push2talk = {
       url = "github:cyrinux/push2talk";
@@ -42,7 +42,7 @@
     };
 
     waybar-syncthing = {
-      url = "github:maximbaz/waybar-syncthing";
+      url = "github:huggyturd/waybar-syncthing";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -63,18 +63,18 @@
   };
 
   outputs = inputs:
-    let globals = { user = "maximbaz"; }; in rec {
+    let globals = { user = "huggyturd"; }; in rec {
       nixosConfigurations = {
-        home-manitoba = import ./hosts/home-manitoba { inherit inputs globals; };
+        "desktop-nvidia" = import ./hosts/desktop-nvidia { inherit inputs globals; };
       };
 
       darwinConfigurations = {
-        MMDFLQCPF9676 = import ./hosts/MMDFLQCPF9676 { inherit inputs globals; };
+        MACOS = import ./hosts/MACOS { inherit inputs globals; };
       };
 
       homeConfigurations = {
-        home-manitoba = nixosConfigurations.home-manitoba.config.home-manager.users.${globals.user}.home;
-        MMDFLQCPF9676 = darwinConfigurations.MMDFLQCPF9676.config.home-manager.users.${globals.user}.home;
+        "desktop-nvidia" = nixosConfigurations."desktop-nvidia".config.home-manager.users.${globals.user}.home;
+        MACOS = darwinConfigurations.MACOS.config.home-manager.users.${globals.user}.home;
       };
     };
 }

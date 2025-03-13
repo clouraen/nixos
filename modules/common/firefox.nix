@@ -11,22 +11,15 @@
       '';
 
       extensions.packages = with firefox-addons; [
-        browserpass
         clearurls
         container-tabs-sidebar
         darkreader
         ff2mpv
-        istilldontcareaboutcookies
         multi-account-containers
         privacy-badger
         refined-github
         sponsorblock
-        to-google-translate
         ublock-origin
-        # simple-temporary-containers
-        # retainer
-        # container-tab-flow
-        # open-external-links-in-a-container
       ];
 
       settings = {
