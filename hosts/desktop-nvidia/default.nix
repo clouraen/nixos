@@ -22,9 +22,7 @@ inputs.nixpkgs.lib.nixosSystem {
       # Disable ACPI errors
       boot = {
         kernelParams = [
-          "acpi=off"              # Disable ACPI completely
-          "noacpi"                # Disable ACPI for IRQ handling
-          "pci=noacpi"            # Disable ACPI for PCI
+          "nvidia.NVreg_PreserveVideoMemoryAllocations=1"  # Prevent black screen
           "quiet"                 # Reduce kernel output
           "loglevel=3"           # Set lower log level
         ];
@@ -41,12 +39,17 @@ inputs.nixpkgs.lib.nixosSystem {
       };
 
       # Graphics configuration
-      hardware.graphics.enable = true;  # New name for opengl.enable
+      hardware.opengl = {
+        enable = true;
+        driSupport = true;
+        driSupport32Bit = true;
+      };
+
       hardware.nvidia = {
         modesetting.enable = true;
         powerManagement = {
-          enable = false;  # Disabled since we're using ACPI=off
-          finegrained = false;
+          enable = true;
+          finegrained = true;
         };
         open = false;
         nvidiaSettings = true;
@@ -56,19 +59,73 @@ inputs.nixpkgs.lib.nixosSystem {
       # Configure fonts with proper scaling
       fonts.fontconfig.enable = true;
 
-      # X server configuration
+      # Force Wayland usage
       services.xserver = {
-        enable = true;
-        videoDrivers = [ "nvidia" ];
+        enable = true;  # Needed for login manager
+        displayManager = {
+          gdm = {
+            enable = true;
+            wayland = true;  # Force Wayland usage
+          };
+          defaultSession = "sway";  # Always start sway
+        };
       };
 
-      # Wayland related environment variables for NVIDIA
-      environment.sessionVariables = {
-        WLR_NO_HARDWARE_CURSORS = "1";
-        NIXOS_OZONE_WL = "1";
-        GBM_BACKEND = "nvidia-drm";
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        LIBVA_DRIVER_NAME = "nvidia";
+      # Ensure XWayland is available for compatibility
+      programs.sway = {
+        enable = true;
+        wrapperFeatures.gtk = true;
+        extraSessionCommands = ''
+          # Force electron apps to use wayland
+          export NIXOS_OZONE_WL="1"
+        '';
+        extraOptions = ["--unsupported-gpu"];  # For better NVIDIA support
+      };
+
+      # Force Wayland for all applications
+      environment = {
+        sessionVariables = {
+          # Wayland specific
+          WLR_NO_HARDWARE_CURSORS = "1";      # Fix cursor issues
+          WLR_RENDERER = "vulkan";            # Use Vulkan renderer
+          NIXOS_OZONE_WL = "1";               # Electron apps Wayland support
+          GBM_BACKEND = "nvidia-drm";         # Hardware acceleration
+          __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+          LIBVA_DRIVER_NAME = "nvidia";
+          WLR_DRM_DEVICES = "/dev/dri/card0"; # Specify GPU device
+          XDG_SESSION_TYPE = "wayland";       # Force Wayland session
+          MOZ_ENABLE_WAYLAND = "1";           # Firefox Wayland support
+          QT_QPA_PLATFORM = "wayland";        # Qt apps on Wayland
+          QT_WAYLAND_DISABLE_WINDOWDECORATION = "1"; # Native Qt decorations
+          SDL_VIDEODRIVER = "wayland";        # SDL apps on Wayland
+          _JAVA_AWT_WM_NONREPARENTING = "1"; # Fix Java apps on Wayland
+          XDG_CURRENT_DESKTOP = "sway";       # Set current desktop
+          XDG_SESSION_DESKTOP = "sway";       # Set session desktop
+          GTK_USE_PORTAL = "1";              # Use system file picker
+        };
+        
+        systemPackages = with pkgs; [
+          # Wayland utilities
+          wayland-utils
+          wl-clipboard
+          wlr-randr
+          qt6.qtwayland
+          glfw-wayland
+          xwayland
+        ];
+      };
+
+      # Additional Wayland configurations
+      xdg.portal = {
+        enable = true;
+        wlr.enable = true;
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      };
+
+      # Force Wayland for Firefox
+      programs.firefox = {
+        enable = true;
+        package = pkgs.firefox-wayland;
       };
 
       system.stateVersion = "23.11";

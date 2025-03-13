@@ -5,15 +5,15 @@
 
   boot = {
     initrd = {
-      availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "dm-snapshot" ];
+      availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "nvidia" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
+      kernelModules = [ "dm-snapshot" "nvidia" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
       luks.devices."crypted" = {
         device = "/dev/sda2";
         preLVM = true;
         allowDiscards = true;
       };
     };
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-intel" "nvidia" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
     extraModulePackages = [ ];
   };
 
